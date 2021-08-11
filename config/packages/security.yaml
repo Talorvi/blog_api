@@ -1,0 +1,31 @@
+security:
+    enable_authenticator_manager: true
+
+    firewalls:
+        api_auth:
+            pattern: ^/api/auth
+            stateless: true
+            json_login:
+                provider: my_in_memory_users
+                check_path: /api/auth/login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+    access_control:
+        - { path: ^/api/auth, roles: PUBLIC_ACCESS }
+        - { path: ^/api,      roles: IS_AUTHENTICATED_FULLY }
+
+    encoders:
+        Symfony\Component\Security\Core\User\User: bcrypt
+
+    providers:
+        my_in_memory_users:
+            memory:
+                users:
+                    admin: { password: $2y$13$EbkTgkCMNJ51AKt4IW9DJuaFpSSvZNBcDSMbuCsw./m/quGprYXoi, roles: [ 'ROLE_ADMIN' ] }
