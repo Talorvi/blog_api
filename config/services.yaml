@@ -29,3 +29,7 @@ services:
     arguments: [ '@landingi.event-store.dbal' ]
     calls:
       - [ addListener, [ '@your-event-listener-service' ] ]
+
+  api_bundle.security.auth_user_provider:
+    class: App\Provider\AuthUserProvider
+    public: true
